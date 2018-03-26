@@ -1,0 +1,7 @@
+body {
+    background-color: aqua
+}
+
+#chart, #quote {
+    max-width: 300px;
+}
