@@ -1,7 +1,21 @@
 body {
-    background-color: aqua
+    background-color: aqua;
+    padding-top:20px;
 }
 
-#chart, #quote {
-    max-width: 300px;
+#text {
+    float:left;
+}
+
+#image {
+    float:right;
+    max-width: 230px;
+}
+
+#gameBox, #scoreBoard {
+    height: 200px;
+}
+
+#chatBox {
+    height: 350px;
 }

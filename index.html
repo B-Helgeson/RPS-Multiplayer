@@ -12,41 +12,81 @@
 
     <!-- Column one is a panel containing the quote -->
     <div class="row">
-        <div class="panel panel-default col-md-6" id="quote"> 
+        <div class="col-md-1"></div> <!-- Blank column for spacing -->
+        <div class="panel panel-default col-md-7" id="quote"> 
             <div class="panel-heading">
-                    <h3 class="panel-title">Rock, Paper, Scissors, Lizard, Spock!</h3>
+                <h3 class="panel-title">Rock, Paper, Scissors, Lizard, Spock!</h3>
             </div>
             <div class="panel-body">
-                    <p class="text-center">
-                    "Scissors cuts Paper,</br>
-                    Paper covers Rock,</br>
-                    Rock crushes Lizard,</br>
-                    Lizard poisons Spock,</br>
-                    Spock smashes Scissors,</br>
-                    Scissors decapitates Lizard,</br>
-                    Lizard eats Paper, </br>
-                    Paper disproves Spock,</br>
-                    and as it always has, </br>
-                    Rock curshes Scissors!"</p>
+                    <div>
+                            <img id="image" class="img-thumbnail" src="assets/images/rpsls_chart.png" alt="game chart">
+                    </div>
+                    <p class="quote" id="text">
+                        "Scissors cuts Paper,</br>
+                        Paper covers Rock,</br>
+                        Rock crushes Lizard,</br>
+                        Lizard poisons Spock,</br>
+                        Spock smashes Scissors,</br>
+                        Scissors decapitates Lizard,</br>
+                        Lizard eats Paper, </br>
+                        Paper disproves Spock,</br>
+                        and as it always has, </br>
+                        Rock curshes Scissors!"
+                    </p>
             </div>
         </div>
 
         <!-- column two is a thumbnail of the chart image -->
-        <div class="col-md-6">
-            <img id="chart" class="img-thumbnail" src="assets/images/rpsls_chart.png" alt="game chart">
+        <!-- <div class="col-md-1"></div> Blank column for spacing -->
+        <!-- <div class="col-md-5" id="chart">
+            <img id="image" class="img-thumbnail" src="assets/images/rpsls_chart.png" alt="game chart">
+        </div> -->
+
+
+    </div> <!-- Closing the first row -->
+
+    <div class="row">
+        <div class="col-md-1"></div> <!-- Blank column for spacing -->
+
+        <div class="panel panel-default col-md-3"> 
+            <div class="panel-heading">
+                <h3 class="panel-title">Game Box</h3>
+            </div>
+            <div class="panel-body" id="gameBox">
+                <span>The Game Logic Goes here</span>
+            </div>
         </div>
 
-        <div id="gamebox">
+        <div class="col-md-1"></div> <!-- Blank column for spacing -->
 
+        <div class="panel panel-default col-md-3"> 
+            <div class="panel-heading">
+                <h3 class="panel-title">Score Board</h3>
+            </div>
+            <div class="panel-body" id="scoreBoard">
+                <div class="scoreBoard">     
+                    <div class="wins">
+                        <h4>Wins: <span class="badge" id="winCount">0</span></h4>
+                    </div> <!-- wins -->            
+                    <div class="losses">
+                        <h4>Losses: <span class="badge" id="lossCount">0</span></h4>
+                    </div> <!-- losses -->
+                </div> <!-- scoreBoard -->
+            </div>
         </div>
+    </div> <!-- Closing the gameBox row -->
 
-
-
-
-
-
-
-
+    <div class="row">
+        <div class="col-md-1"></div> <!-- Blank column for spacing -->
+        <div class="panel panel-default col-md-7" id="chatBox"> 
+            <div class="panel-heading">
+                <h3 class="panel-title">Chat with your opponent here!</h3>
+            </div>
+            <div class="panel-body" id="gameContent">
+                <span>Chatbox goes here</span>
+            </div>
+        </div>
+    </div> <!-- Closing the gameBox row -->
 
 
 
