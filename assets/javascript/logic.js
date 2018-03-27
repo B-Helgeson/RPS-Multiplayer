@@ -15,9 +15,9 @@ var dataRef = firebase.database();
 
 
 // Add a user to firebase - 
- 
    var name = "";
 
+   // function to push new users to firebase
    $("#add-user").on("click", function(event) {
     event.preventDefault();
     name = $("#name-input").val().trim();
@@ -25,14 +25,42 @@ var dataRef = firebase.database();
         name: name,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
+    localStorage.setItem("username", name); //also pushes name to local storage
+    $("#disabledInput").val(localStorage.getItem("username")) //Pushes name to disabled input in chat box. 
     });
 
-
+    // function to listen for new users added 
     dataRef.ref().on("child_added", function(childSnapshot) {
         console.log(childSnapshot.val().name); //console log names
         }, function(errorObject) {
         console.log("Errors handled: " + errorObject.code); //console log errors
       });
+
+      // Retrieve the users name from local storage if present and adds to chat box. 
+        userName = localStorage.getItem('username');
+      if (userName != "undefined" || userName != "null") {
+          $("#disabledInput").val(localStorage.getItem("username"))
+      } else {
+          $("#disabledInput").val("Login to chat")
+      }
+
+//----------------------------------------------------------------------------------
+// Use Presence to track active players
+var connectionsRef = dataRef.ref("/connections");
+var connectedRef = dataRef.ref(".info/connected");
+    connectedRef.on("value", function(snap) {
+        if (snap.val()) {
+        var con = connectionsRef.push(true);
+        con.onDisconnect().remove();
+        }
+    });
+
+    connectionsRef.on("value", function(snap) {
+    $("#connected-players").text(snap.numChildren());
+    });
+
+
+
 
 
 
@@ -49,11 +77,12 @@ var dataRef = firebase.database();
 //   if (e.keyCode == 13) {
 //     var name = $('#nameInput').val();
 //     var text = $('#messageInput').val();
-//     myDataRef.push({name: name, text: text});
+//     dataRef.push({name: name, 
+//         text: text});
 //     $('#messageInput').val('');
 //   }
 // });
-// myDataRef.on('child_added', function(snapshot) {
+// datataRef.on('child_added', function(snapshot) {
 //   var message = snapshot.val();
 //   displayChatMessage(message.name, message.text);
 // });
