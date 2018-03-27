@@ -1,12 +1,38 @@
-
-
+$(document).ready(function(){
 // Initialize Firebase
-
-
-
+    var config = {
+        apiKey: "AIzaSyAjMR0unuqCMbb8PZtQFNTiPBeolDLV6ao",
+        authDomain: "rps-lizardspock.firebaseapp.com",
+        databaseURL: "https://rps-lizardspock.firebaseio.com",
+        projectId: "rps-lizardspock",
+        storageBucket: "rps-lizardspock.appspot.com",
+        messagingSenderId: "904612609218"
+      };
+      firebase.initializeApp(config);
 
 // Define Variables
+var dataRef = firebase.database();
 
+
+// Add a user to firebase - 
+ 
+   var name = "";
+
+   $("#add-user").on("click", function(event) {
+    event.preventDefault();
+    name = $("#name-input").val().trim();
+    dataRef.ref().push({
+        name: name,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+        });
+    });
+
+
+    dataRef.ref().on("child_added", function(childSnapshot) {
+        console.log(childSnapshot.val().name); //console log names
+        }, function(errorObject) {
+        console.log("Errors handled: " + errorObject.code); //console log errors
+      });
 
 
 
@@ -18,7 +44,23 @@
 
 // Define chatbox functionality
 
-
+// var myDataRef = new Firebase('https://rps-lizardspock.firebaseio.com');
+// $('#messageInput').keypress(function (e) {
+//   if (e.keyCode == 13) {
+//     var name = $('#nameInput').val();
+//     var text = $('#messageInput').val();
+//     myDataRef.push({name: name, text: text});
+//     $('#messageInput').val('');
+//   }
+// });
+// myDataRef.on('child_added', function(snapshot) {
+//   var message = snapshot.val();
+//   displayChatMessage(message.name, message.text);
+// });
+// function displayChatMessage(name, text) {
+//   $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+//   $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+// };
 
 
 
@@ -66,3 +108,7 @@
 //       document.querySelector("#game").innerHTML = html;
 //     }
 //   };
+
+
+
+});

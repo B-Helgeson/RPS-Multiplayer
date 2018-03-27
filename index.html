@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
     <title>RPSLS Game</title>
@@ -64,13 +65,27 @@
                 <h3 class="panel-title">Score Board</h3>
             </div>
             <div class="panel-body" id="scoreBoard">
-                <div class="scoreBoard">     
+                <div class="scoreBoard">    
+                    
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="name-input">User Name:</label>
+                            <input class="form-control" id="name-input" type="text">
+                        </div>
+                        <button class="btn btn-default" id="add-user" type="submit">Login</button>
+                    </form>
+
+                    <hr />
+
                     <div class="wins">
                         <h4>Wins: <span class="badge" id="winCount">0</span></h4>
                     </div> <!-- wins -->            
                     <div class="losses">
                         <h4>Losses: <span class="badge" id="lossCount">0</span></h4>
                     </div> <!-- losses -->
+
+
+
                 </div> <!-- scoreBoard -->
             </div>
         </div>
@@ -83,15 +98,38 @@
                 <h3 class="panel-title">Chat with your opponent here!</h3>
             </div>
             <div class="panel-body" id="gameContent">
-                <span>Chatbox goes here</span>
+                <form>    
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <label>Name
+                                <input type="text" id='nameInput' placeholder='Name' />
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <label>Message
+                                <textarea id='messageInput' placeholder='Message'></textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <div id='messagesDiv' class="msg-wrapper"></div>
+                            <hr />
+                        </div>
+                    </div>       
+                </form>
             </div>
         </div>
     </div> <!-- Closing the gameBox row -->
 
 
 
-    <!-- Linking to firebase -->
-    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+    
+
     <!-- Linking to jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <!-- Linking to my custom javascript -->

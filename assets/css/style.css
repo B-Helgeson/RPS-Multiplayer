@@ -13,9 +13,11 @@ body {
 }
 
 #gameBox, #scoreBoard {
-    height: 200px;
+    height: 250px;
 }
 
+
+/* Chat Box Functionality below: */
 #chatBox {
     height: 350px;
 }
