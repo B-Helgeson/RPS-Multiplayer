@@ -13,16 +13,24 @@ $(document).ready(function(){
 // Define Variables
 var dataRef = firebase.database();
 
+// dbroot
+// dbchat
+
 
 // Add a user to firebase - 
    var name = "";
+   var wins = 0;
+   var losses = 0;
+
 
    // function to push new users to firebase
    $("#add-user").on("click", function(event) {
     event.preventDefault();
     name = $("#name-input").val().trim();
-    dataRef.ref().push({
+    dataRef.ref("/players").push({
         name: name,
+        wins: wins,
+        losses: losses,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
     localStorage.setItem("username", name); //also pushes name to local storage
@@ -30,7 +38,7 @@ var dataRef = firebase.database();
     });
 
     // function to listen for new users added 
-    dataRef.ref().on("child_added", function(childSnapshot) {
+    dataRef.ref("/players").on("child_added", function(childSnapshot) {
         console.log(childSnapshot.val().name); //console log names
         }, function(errorObject) {
         console.log("Errors handled: " + errorObject.code); //console log errors
@@ -64,7 +72,12 @@ var connectedRef = dataRef.ref(".info/connected");
 
 
 
-// Define Base Game Logic around Guesses
+// Define Base Game Logic around Player Guesses
+
+
+
+
+//Log Player Guesses 
 
 
 
@@ -72,24 +85,25 @@ var connectedRef = dataRef.ref(".info/connected");
 
 // Define chatbox functionality
 
-// var myDataRef = new Firebase('https://rps-lizardspock.firebaseio.com');
-// $('#messageInput').keypress(function (e) {
-//   if (e.keyCode == 13) {
-//     var name = $('#nameInput').val();
-//     var text = $('#messageInput').val();
-//     dataRef.push({name: name, 
-//         text: text});
-//     $('#messageInput').val('');
-//   }
-// });
-// datataRef.on('child_added', function(snapshot) {
-//   var message = snapshot.val();
-//   displayChatMessage(message.name, message.text);
-// });
-// function displayChatMessage(name, text) {
-//   $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-//   $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-// };
+$('#messageInput').keypress(function (e) {
+  if (e.keyCode == 13) {
+    var name = localStorage.getItem('username').val();
+    var text = $('#messageInput').val();
+    dataRef.ref("/chat").push({name: name, 
+        text: text});
+    $('#messageInput').val('');
+  }
+});
+
+dataRef.ref("/chat").on('child_added', function(snapshot) {
+  var message = snapshot.val();
+  displayChatMessage(message.name, message.text);
+});
+
+function displayChatMessage(name, text) {
+  $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+  $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+};
 
 
 
