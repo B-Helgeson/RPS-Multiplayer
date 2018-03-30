@@ -13,10 +13,6 @@ $(document).ready(function(){
 // Define Variables
 var dataRef = firebase.database();
 
-// dbroot
-// dbchat
-
-
 // Add a user to firebase - 
    var name = "";
    var wins = 0;
@@ -50,15 +46,8 @@ var dataRef = firebase.database();
         console.log("Errors handled: " + errorObject.code); //console log errors
       });
 
-      // Retrieve the users name from local storage if present and adds to chat box. 
-        userName = localStorage.getItem('username');
-      if (userName != "undefined" || userName != "null") {
-          $("#disabledInput").val(localStorage.getItem("username"))
-      } else {
-          $("#disabledInput").val("Login to chat")
-      }
 
-//----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 // Use Presence to track active players
 var connectionsRef = dataRef.ref("/connections");
 var connectedRef = dataRef.ref(".info/connected");
@@ -72,7 +61,7 @@ var connectedRef = dataRef.ref(".info/connected");
     connectionsRef.on("value", function(snap) {
     $("#connected-players").text(snap.numChildren());
     });
-
+//----------------------------------------------------------------------------------------
 
 
 
@@ -84,12 +73,23 @@ var connectedRef = dataRef.ref(".info/connected");
 
 
 //Log Player Guesses 
+//
 
 
 
 
 // Define chatbox functionality
+//----------------------------------------------------------------------------------------------
 
+// Retrieve the user's name from local storage if present and adds to chat box name field. 
+      userName = localStorage.getItem('username');
+      if (userName != "undefined" || userName != "null") {
+          $("#disabledInput").val(localStorage.getItem("username"))
+      } else {
+          $("#disabledInput").val("Login to chat")
+      }
+
+//Store Message Inputs to FireBase (along with username)
 $('#messageInput').keypress(function (e) {
   if (e.keyCode == 13) {
     var name = localStorage.getItem('username');
@@ -102,6 +102,7 @@ $('#messageInput').keypress(function (e) {
   }
 });
 
+//Listen for new chat messages and update the document
 dataRef.ref("/chat").on('child_added', function(snapshot) {
   var message = snapshot.val();
   displayChatMessage(message.date, message.name, message.text);
@@ -112,6 +113,7 @@ function displayChatMessage(date, name, text) {
   $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
 };
 
+//-----------------------------------------------------------------------------------------------------------
 
 
 
