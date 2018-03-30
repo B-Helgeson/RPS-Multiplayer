@@ -22,6 +22,12 @@ var dataRef = firebase.database();
    var wins = 0;
    var losses = 0;
 
+//Function to format date for game using native javascript
+   function getDate(){
+    var now = new Date();
+    var dateString = now.toISOString();
+    return dateString
+    }
 
    // function to push new users to firebase
    $("#add-user").on("click", function(event) {
@@ -31,7 +37,7 @@ var dataRef = firebase.database();
         name: name,
         wins: wins,
         losses: losses,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
+        date: getDate()
         });
     localStorage.setItem("username", name); //also pushes name to local storage
     $("#disabledInput").val(localStorage.getItem("username")) //Pushes name to disabled input in chat box. 
@@ -82,26 +88,27 @@ var connectedRef = dataRef.ref(".info/connected");
 
 
 
-
 // Define chatbox functionality
 
 $('#messageInput').keypress(function (e) {
   if (e.keyCode == 13) {
-    var name = localStorage.getItem('username').val();
+    var name = localStorage.getItem('username');
     var text = $('#messageInput').val();
     dataRef.ref("/chat").push({name: name, 
-        text: text});
+        text: text,
+        date: getDate()
+        });
     $('#messageInput').val('');
   }
 });
 
 dataRef.ref("/chat").on('child_added', function(snapshot) {
   var message = snapshot.val();
-  displayChatMessage(message.name, message.text);
+  displayChatMessage(message.date, message.name, message.text);
 });
 
-function displayChatMessage(name, text) {
-  $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+function displayChatMessage(date, name, text) {
+  $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#messagesDiv'));
   $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
 };
 
