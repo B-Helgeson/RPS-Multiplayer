@@ -54,11 +54,13 @@ var dataRef = firebase.database();
         if (!marioLoggedIn) {
             playerNumber = "1";
             currentPlayer = mario;
+            marioLoggedIn = true;
         }
         else if (!luigiLoggedIn) {
             playerNumber = "2";
             currentPlayer = luigi;
-        }
+            luigiLoggedIn = true;
+        } // handle scenario if more than 2 players are online
         else {
             playerNumber = null;
             currentPlayer = null;
