@@ -4,4 +4,6 @@ An online multiplayer rock, paper, scissors game themed after a version of the g
 
 This game requires two players (or two instances in a browser window). 
 
+Inside the code, each player is assigned as either "mario" or "luigi", but this isn't exposed to the player. 
+
 Keywords: Bootstrap, Firebase, jQuery

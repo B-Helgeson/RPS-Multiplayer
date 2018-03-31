@@ -1,4 +1,5 @@
 $(document).ready(function(){ // Opening JavaScript code with docuement ready function
+//#region global config
 
 // Initialize Firebase Setup
     var config = {
@@ -15,24 +16,23 @@ $(document).ready(function(){ // Opening JavaScript code with docuement ready fu
 var dataRef = firebase.database();
 
 // Global Variables For the Game
-   var playerName,
-   player1LoggedIn = false,
-   player2LoggedIn = false,
-   playerNumber,
-   playerObject,
-   player1 = {
-       name: "",
-       choice: "",
-       wins: 0,
-       losses: 0
-   },
-   player2 = {
-       name: "",
-       choice: "",
-       wins: 0,
-       losses: 0
-   },
-   resetId;
+   var  playerName,
+        marioLoggedIn = false,
+        luigiLoggedIn = false,
+        playerNum,
+        currentPlayer,
+        mario = {
+            name: "",
+            pick: "",
+            wins: 0,
+            losses: 0
+            },
+        luigi = {
+            name: "",
+            pick: "",
+            wins: 0,
+            losses: 0
+            }
 
 //Function to format date for game using native javascript
    function getDate(){
@@ -42,29 +42,40 @@ var dataRef = firebase.database();
     }
 
 //-------------------------------------------------------------------------------------------
+//#endregion
+
+//#region login/logout/reset functions
 
    // function to push new users to firebase
    $("#add-user").on("click", function(event) {
     event.preventDefault();
-    name = $("#name-input").val().trim();
-    dataRef.ref("/players").push({
-        name: name,
-        wins: wins,
-        losses: losses,
-        date: getDate()
-        });
-    localStorage.setItem("username", name); //also pushes name to local storage
-    $("#disabledInput").val(localStorage.getItem("username")) //Pushes name to disabled input in chat box. 
+
+        // Determine if current player will be assiged to "mario" or "luigi"
+        if (!marioLoggedIn) {
+            playerNumber = "1";
+            currentPlayer = mario;
+        }
+        else if (!luigiLoggedIn) {
+            playerNumber = "2";
+            currentPlayer = luigi;
+        }
+        else {
+            playerNumber = null;
+            currentPlayer = null;
+            alert("Too many are players online now, try again later")
+        }
+
+        // Once player is assigned a role, send info to database
+        if (playerNumber) {
+            playerName = $("#name-input").val().trim();
+            currentPlayer.name = playerName;
+            $("#name-input").val("");
+            $("#disabledInput").val(playerName);
+            dataRef.ref("/players/" + playerNumber).set(currentPlayer);
+            dataRef.ref("/players/" + playerNumber).onDisconnect().remove();
+            }
     });
-
-
-    // function to listen for new users added 
-    dataRef.ref("/players").on("child_added", function(childSnapshot) {
-        console.log(childSnapshot.val().name); //console log names
-        }, function(errorObject) {
-        console.log("Errors handled: " + errorObject.code); //console log errors
-      });
-
+    
 
 //------------------------------------------------------------------------------------
 // Use Presence to track active players
@@ -84,38 +95,30 @@ var connectedRef = dataRef.ref(".info/connected");
 
 
 //----------------------------------------------------------------------------------------
+//#endregion
 
-// Define Base Game Logic around Player Guesses
+//#region Game Play logic 
 
+// when an optoin is picked, send it to the database
+$(".icon").click(function () {
+    currentPlayer.pick = this.id;
+    dataRef.ref("/players/" + playerNumber).set(currentPlayer);
+});
 
-  //@param {string} p1selection Rock, Paper, Scissors, Lizard, Spock
-  //@param {string} p2selection Rock, Paper, Scissors, Lizard, Spock
- 
-function gameLogic(p1selection, p2selection) {
-    // Guess and Wins Logic
-    if ((playerGuess === "Rock") || (playerGuess === "Paper") || (playerGuess === "Scissors") || (playerGuess === "Lizard") || (playerGuess === "Spock")) 
-        { if (playerGuess === computerGuess) { ties++ } // If guesses match each other, the players tie
-        else if ((playerGuess === "Scissors") && (computerGuess === "Paper")) {wins++}  // Scissors cuts Paper
-        else if ((playerGuess === "Paper") && (computerGuess === "Rock")) {wins++}   // Paper covers Rock
-        else if ((playerGuess === "Rock") && (computerGuess === "Lizard")) {wins++}   // Rock crushes Lizard
-        else if ((playerGuess === "Lizard") && (computerGuess === "Spock")) {wins++}   // Lizard poisons Spock
-        else if ((playerGuess === "Spock") && (computerGuess === "Scissors")) {wins++}  // Spock smashes Scissors
-        else if ((playerGuess === "Scissors") && (computerGuess === "Lizard")) {wins++}   // Scissors decapitates Lizard
-        else if ((playerGuess === "Lizard") && (computerGuess === "Paper")) {wins++}   // Lizard eats Paper
-        else if ((playerGuess === "Paper") && (computerGuess === "Spock")) {wins++}   // Paper disproves Spock
-        else if ((playerGuess === "Spock") && (computerGuess === "Rock")) {wins++}   // Spock vaporizes Rock
-        else if ((playerGuess === "Rock") && (computerGuess === "Scissors")) {wins++}   // Rock crushes Scissors
-        else { losses++ } // All other scenarios will result in a loss
-            
-      var html =
-        "<p>You chose: " + playerGuess + "</p>" +
-        "<p>The computer chose: " + playerGuess + "</p>" +
-        "<p>wins: " + wins + "</p>" +
-        "<p>losses: " + losses + "</p>" +
-        "<p>ties: " + ties + "</p>";
-
-      document.querySelector("#gameDiv").innerHTML = html;
-    }
+// Define Base Game Logic around Player Guesses 
+function gameLogic(marioPick, luigiPick) {
+    if (marioPick == luigiPick) { ties++ } // If guesses match each other, the players tie
+        else if ((marioPick == "Scissors") && (luigiPick == "Paper")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Scissors cuts Paper
+        else if ((marioPick == "Paper") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper covers Rock
+        else if ((marioPick == "Rock") && (luigiPick == "Lizard")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Lizard
+        else if ((marioPick == "Lizard") && (luigiPick == "Spock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Lizard poisons Spock
+        else if ((marioPick == "Spock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Spock smashes Scissors
+        else if ((marioPick == "Scissors") && (luigiPick == "Lizard")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Scissors decapitates Lizard
+        else if ((marioPick == "Lizard") && (luigiPick == "Paper")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Lizard eats Paper
+        else if ((marioPick == "Paper") && (luigiPick == "Spock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper disproves Spock
+        else if ((marioPick == "Spock") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Spock vaporizes Rock
+        else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
+        else { if (playerNumber == "2") { currentPlayer.wins++;} else {currentPlayer.losses++;}} // All other scenarios will result in a loss
   };
 
 
@@ -126,11 +129,10 @@ function gameLogic(p1selection, p2selection) {
 
 
 
-
-
-
-// Define chatbox functionality
 //----------------------------------------------------------------------------------------------
+//#endregion
+
+//#region Chat Box Functionality
 
 // Retrieve the user's name from local storage if present and adds to chat box name field. 
       userName = localStorage.getItem('username');
@@ -165,5 +167,6 @@ function displayChatMessage(date, name, text) {
 };
 
 //-----------------------------------------------------------------------------------------------------------
+//#endregion
 
-}); // End of all JavaScript Code
+}); // End of all JavaScript 
