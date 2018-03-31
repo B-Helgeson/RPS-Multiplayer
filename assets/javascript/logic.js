@@ -65,12 +65,9 @@ var connectedRef = dataRef.ref(".info/connected");
     $("#connected-players").text(snap.numChildren());
     });
 
+
+
 //----------------------------------------------------------------------------------------
-
-
-
-
-
 
 // Define Base Game Logic around Player Guesses
 
@@ -82,44 +79,44 @@ var connectedRef = dataRef.ref(".info/connected");
 
   document.onkeyup = function(event) {
 
-    var userGuess = event.key;
+    var playerGuess = event.key;
 
     var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
 
-    if ((userGuess === "r") || (userGuess === "p") || (userGuess === "s") || (userGuess === "l") || (userGuess === "k")) 
-        { if (userGuess === computerGuess) { // If guesses match each other, the players tie
+    if ((playerGuess === "r") || (playerGuess === "p") || (playerGuess === "s") || (playerGuess === "l") || (playerGuess === "k")) 
+        { if (playerGuess === computerGuess) { // If guesses match each other, the players tie
             ties++; 
-        } else if ((userGuess === "s") && (computerGuess === "p")) { // Scissors cuts Paper
+        } else if ((playerGuess === "s") && (computerGuess === "p")) { // Scissors cuts Paper
             wins++;
-        } else if ((userGuess === "p") && (computerGuess === "r")) { // Paper covers Rock
+        } else if ((playerGuess === "p") && (computerGuess === "r")) { // Paper covers Rock
             wins++;
-        } else if ((userGuess === "r") && (computerGuess === "l")) { // Rock crushes Lizard
+        } else if ((playerGuess === "r") && (computerGuess === "l")) { // Rock crushes Lizard
             wins++;
-        } else if ((userGuess === "l") && (computerGuess === "k")) { // Lizard poisons Spock
+        } else if ((playerGuess === "l") && (computerGuess === "k")) { // Lizard poisons Spock
             wins++;
-        } else if ((userGuess === "k") && (computerGuess === "s")) { // Spock smashes Scissors
+        } else if ((playerGuess === "k") && (computerGuess === "s")) { // Spock smashes Scissors
             wins++;
-        } else if ((userGuess === "s") && (computerGuess === "l")) { // Scissors decapitates Lizard
+        } else if ((playerGuess === "s") && (computerGuess === "l")) { // Scissors decapitates Lizard
             wins++;
-        } else if ((userGuess === "l") && (computerGuess === "p")) { // Lizard eats Paper
+        } else if ((playerGuess === "l") && (computerGuess === "p")) { // Lizard eats Paper
             wins++;
-        } else if ((userGuess === "p") && (computerGuess === "k")) { // Paper disproves Spock
+        } else if ((playerGuess === "p") && (computerGuess === "k")) { // Paper disproves Spock
             wins++;
-        } else if ((userGuess === "k") && (computerGuess === "r")) { // Spock vaporizes Rock
+        } else if ((playerGuess === "k") && (computerGuess === "r")) { // Spock vaporizes Rock
             wins++;
-        } else if ((userGuess === "r") && (computerGuess === "s")) { // Rock crushes Scissors
+        } else if ((playerGuess === "r") && (computerGuess === "s")) { // Rock crushes Scissors
             wins++;
         } else { // All other scenarios will result in a loss
             losses++ } 
 
       var html =
-        "<p>You chose: " + userGuess + "</p>" +
-        "<p>The computer chose: " + computerGuess + "</p>" +
+        "<p>You chose: " + playerGuess + "</p>" +
+        "<p>The computer chose: " + playerGuess + "</p>" +
         "<p>wins: " + wins + "</p>" +
         "<p>losses: " + losses + "</p>" +
         "<p>ties: " + ties + "</p>";
 
-      document.querySelector("#game").innerHTML = html;
+      document.querySelector("#gameDiv").innerHTML = html;
     }
   };
 

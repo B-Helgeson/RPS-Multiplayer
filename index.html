@@ -56,7 +56,18 @@
                 <h3 class="panel-title">Game Box</h3>
             </div>
             <div class="panel-body" id="gameBox">
-                <span>The Game Logic Goes here</span>
+                <p>
+                    <button type="button" class="choice btn btn-primary">Rock</button>
+                    <button type="button" class="choice btn btn-success">Paper</button>
+                    <button type="button" class="choice btn btn-info">Scissors</button> 
+                </p><p>
+                    <button type="button" class="choice btn btn-warning">Lizard</button>
+                    <button type="button" class="choice btn btn-danger">Spock</button>
+                </p>
+
+                <div id="messageBox">
+                        <input class="form-control text-white bg-dark" id="gameDiv" type="text" placeholder="Waiting for another player" disabled>
+                </div>
             </div>
         </div>
 
@@ -120,8 +131,8 @@
 
                     <div class="row">
                         <div class="large-12 columns">
-                            <div id='messagesDiv' class="msg-wrapper"></div>
                             <hr />
+                            <div id='chatDiv' class="msg-wrapper"></div>
                         </div>
                     </div>       
                 </form>

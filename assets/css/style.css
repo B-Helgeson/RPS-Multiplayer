@@ -19,6 +19,6 @@ body {
 
 
 /* Chat Box Functionality below: */
-#chatBox {
-    height: 350px;
+#chatDiv, #gameDiv {
+    height: 125px;
 }
