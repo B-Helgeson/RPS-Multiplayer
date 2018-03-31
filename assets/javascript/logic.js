@@ -1,5 +1,6 @@
-$(document).ready(function(){
-// Initialize Firebase
+$(document).ready(function(){ // Opening JavaScript code with docuement ready function
+
+// Initialize Firebase Setup
     var config = {
         apiKey: "AIzaSyAjMR0unuqCMbb8PZtQFNTiPBeolDLV6ao",
         authDomain: "rps-lizardspock.firebaseapp.com",
@@ -25,6 +26,7 @@ var dataRef = firebase.database();
     return dateString
     }
 
+
    // function to push new users to firebase
    $("#add-user").on("click", function(event) {
     event.preventDefault();
@@ -38,6 +40,7 @@ var dataRef = firebase.database();
     localStorage.setItem("username", name); //also pushes name to local storage
     $("#disabledInput").val(localStorage.getItem("username")) //Pushes name to disabled input in chat box. 
     });
+
 
     // function to listen for new users added 
     dataRef.ref("/players").on("child_added", function(childSnapshot) {
@@ -61,7 +64,9 @@ var connectedRef = dataRef.ref(".info/connected");
     connectionsRef.on("value", function(snap) {
     $("#connected-players").text(snap.numChildren());
     });
+
 //----------------------------------------------------------------------------------------
+
 
 
 
@@ -69,11 +74,63 @@ var connectedRef = dataRef.ref(".info/connected");
 
 // Define Base Game Logic around Player Guesses
 
+  var computerChoices = ["r", "p", "s","l","k"];
+
+  var wins = 0;
+  var losses = 0;
+  var ties = 0;
+
+  document.onkeyup = function(event) {
+
+    var userGuess = event.key;
+
+    var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+
+    if ((userGuess === "r") || (userGuess === "p") || (userGuess === "s") || (userGuess === "l") || (userGuess === "k")) 
+        { if (userGuess === computerGuess) { // If guesses match each other, the players tie
+            ties++; 
+        } else if ((userGuess === "s") && (computerGuess === "p")) { // Scissors cuts Paper
+            wins++;
+        } else if ((userGuess === "p") && (computerGuess === "r")) { // Paper covers Rock
+            wins++;
+        } else if ((userGuess === "r") && (computerGuess === "l")) { // Rock crushes Lizard
+            wins++;
+        } else if ((userGuess === "l") && (computerGuess === "k")) { // Lizard poisons Spock
+            wins++;
+        } else if ((userGuess === "k") && (computerGuess === "s")) { // Spock smashes Scissors
+            wins++;
+        } else if ((userGuess === "s") && (computerGuess === "l")) { // Scissors decapitates Lizard
+            wins++;
+        } else if ((userGuess === "l") && (computerGuess === "p")) { // Lizard eats Paper
+            wins++;
+        } else if ((userGuess === "p") && (computerGuess === "k")) { // Paper disproves Spock
+            wins++;
+        } else if ((userGuess === "k") && (computerGuess === "r")) { // Spock vaporizes Rock
+            wins++;
+        } else if ((userGuess === "r") && (computerGuess === "s")) { // Rock crushes Scissors
+            wins++;
+        } else { // All other scenarios will result in a loss
+            losses++ } 
+
+      var html =
+        "<p>You chose: " + userGuess + "</p>" +
+        "<p>The computer chose: " + computerGuess + "</p>" +
+        "<p>wins: " + wins + "</p>" +
+        "<p>losses: " + losses + "</p>" +
+        "<p>ties: " + ties + "</p>";
+
+      document.querySelector("#game").innerHTML = html;
+    }
+  };
+
+
 
 
 
 //Log Player Guesses 
 //
+
+
 
 
 
@@ -115,52 +172,4 @@ function displayChatMessage(date, name, text) {
 
 //-----------------------------------------------------------------------------------------------------------
 
-
-
-
-
-// Basic Rock Paper Scissors LOGIC below for reference: 
-
-//   var computerChoices = ["r", "p", "s"];
-
-//   var wins = 0;
-//   var losses = 0;
-//   var ties = 0;
-
-//   document.onkeyup = function(event) {
-
-//     var userGuess = event.key;
-
-//     var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
-
-//     if ((userGuess === "r") || (userGuess === "p") || (userGuess === "s")) {
-//       if ((userGuess === "r") && (computerGuess === "s")) {
-//         wins++;
-//      } else if ((userGuess === "r") && (computerGuess === "p")) {
-//         losses++;
-//       } else if ((userGuess === "s") && (computerGuess === "r")) {
-//         losses++;
-//       } else if ((userGuess === "s") && (computerGuess === "p")) {
-//         wins++;
-//       } else if ((userGuess === "p") && (computerGuess === "r")) {
-//         wins++;
-//       } else if ((userGuess === "p") && (computerGuess === "s")) {
-//         losses++;
-//       } else if (userGuess === computerGuess) {
-//         ties++;
-//       }
-
-//       var html =
-//         "<p>You chose: " + userGuess + "</p>" +
-//         "<p>The computer chose: " + computerGuess + "</p>" +
-//         "<p>wins: " + wins + "</p>" +
-//         "<p>losses: " + losses + "</p>" +
-//         "<p>ties: " + ties + "</p>";
-
-//       document.querySelector("#game").innerHTML = html;
-//     }
-//   };
-
-
-
-});
+}); // End of all JavaScript Code

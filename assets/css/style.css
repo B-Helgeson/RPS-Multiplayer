@@ -1,5 +1,6 @@
 body {
     background-color: aqua;
+    background-image: url("../images/bbtBackground.jpg");
     padding-top:20px;
 }
 
