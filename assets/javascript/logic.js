@@ -113,12 +113,27 @@ function youPicked () {
 }
 
 
-
 // when an option is picked, send it to the database
-$(".icon").click(function () {
+$(".choice").click(function () {
     currentPlayer.pick = this.id;
-    dataRef.ref("/players/" + playerNumber).set(currentPlayer);
+    dataRef.ref("/players/" + playerNum).set(currentPlayer.pick);
+    $("#infoBox").text("You selected " + this.id)
+    setTimeout(2000); // Wait just a sec to allow user to see above message
 });
+
+
+// When players are updated, check if both players have made a selection
+dataRef.ref("/players/").on("value", function (snapshot) {
+
+    $("#infoBox").val("Waiting on opponent");
+
+    // Once both parties have picked, run the game logic. 
+    if (mario.pick && luigi.pick) {
+        gameLogic(mario.pick, luigi.pick);
+    }
+
+} );
+
 
 // Define Base Game Logic around Player Guesses 
 function gameLogic(marioPick, luigiPick) {
@@ -137,6 +152,8 @@ function gameLogic(marioPick, luigiPick) {
         else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
         // All other scenarios will result in a loss for player one
         else { if (playerNumber == "1") { currentPlayer.losses++;} else {currentPlayer.wins++;}} 
+
+        $("#infoBox").val(currentPlayer.name+ " picked " + currentPlayer.pick + " opponent picked ")
   };
 
 

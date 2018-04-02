@@ -10,6 +10,6 @@ This game requires two players (or two instances in a browser window).
 
 Inside the code, each player is assigned as either "mario" or "luigi", for the purposes of tracking player1 and player2, but this isn't exposed to the player. 
 
-The chatbox is fully functional. 
+The chatbox is fully functional and scrolls to bottom of page. 
 
 Keywords: Bootstrap, Firebase, jQuery, Game, Chat
