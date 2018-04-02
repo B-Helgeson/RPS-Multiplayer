@@ -140,18 +140,18 @@ function gameLogic(marioPick, luigiPick) {
     // If guesses match each other, the players tie
     if (marioPick == luigiPick) { ties++ } 
         // The following scenarios result in a win for player one
-        else if ((marioPick == "Scissors") && (luigiPick == "Paper")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Scissors cuts Paper
-        else if ((marioPick == "Paper") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper covers Rock
-        else if ((marioPick == "Rock") && (luigiPick == "Lizard")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Lizard
-        else if ((marioPick == "Lizard") && (luigiPick == "Spock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Lizard poisons Spock
-        else if ((marioPick == "Spock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Spock smashes Scissors
-        else if ((marioPick == "Scissors") && (luigiPick == "Lizard")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Scissors decapitates Lizard
-        else if ((marioPick == "Lizard") && (luigiPick == "Paper")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Lizard eats Paper
-        else if ((marioPick == "Paper") && (luigiPick == "Spock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper disproves Spock
-        else if ((marioPick == "Spock") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Spock vaporizes Rock
-        else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
+        else if ((marioPick == "Scissors") && (luigiPick == "Paper")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Scissors cuts Paper
+        else if ((marioPick == "Paper") && (luigiPick == "Rock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper covers Rock
+        else if ((marioPick == "Rock") && (luigiPick == "Lizard")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Lizard
+        else if ((marioPick == "Lizard") && (luigiPick == "Spock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Lizard poisons Spock
+        else if ((marioPick == "Spock") && (luigiPick == "Scissors")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Spock smashes Scissors
+        else if ((marioPick == "Scissors") && (luigiPick == "Lizard")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Scissors decapitates Lizard
+        else if ((marioPick == "Lizard") && (luigiPick == "Paper")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Lizard eats Paper
+        else if ((marioPick == "Paper") && (luigiPick == "Spock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper disproves Spock
+        else if ((marioPick == "Spock") && (luigiPick == "Rock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Spock vaporizes Rock
+        else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
         // All other scenarios will result in a loss for player one
-        else { if (playerNumber == "1") { currentPlayer.losses++;} else {currentPlayer.wins++;}} 
+        else { if (playerNum == "1") { currentPlayer.losses++;} else {currentPlayer.wins++;}} 
 
         $("#infoBox").val(currentPlayer.name+ " picked " + currentPlayer.pick + " opponent picked ")
   };
@@ -187,6 +187,7 @@ $('#messageInput').keypress(function (e) {
         text: text,
         date: getDate()
         });
+
     $('#messageInput').val('');
   }
 });
