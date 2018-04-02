@@ -4,7 +4,7 @@ An online multiplayer rock, paper, scissors game themed after a version of the g
 
 Click here to play: https://b-helgeson.github.io/RPS-Multiplayer/
 
-Click here to view the link in my Portfolio: file:///C:/Users/Brandon/Desktop/UCF_Coding_Bootcamp/Homework_Repos/1_Portfolios/Responsive-Portfolio/portfolio.html
+Click here to view the link in my Portfolio: https://b-helgeson.github.io/Responsive-Portfolio/
 
 This game requires two players (or two instances in a browser window). 
 
