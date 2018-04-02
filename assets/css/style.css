@@ -14,13 +14,13 @@ body {
 }
 
 #gameBox, #scoreBoard {
-    height: 250px;
+    height: 260px;
 }
 
 
 /* Chat Box Functionality below: */
-#chatDiv, #infoBox {
-    height: 125px;
+#infoBox {
+    height: 50px;
 }
 
 #chatDiv {
@@ -28,3 +28,9 @@ body {
     background: lightgray;
     overflow: auto;
 }
+
+/* Buttons Styling */
+#lizard {
+    padding-left: 36px;
+    background: url(../images/lizard.png) no-repeat 0 -4px;
+    }
