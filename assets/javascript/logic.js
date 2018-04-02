@@ -183,8 +183,16 @@ dataRef.ref("/chat").on('child_added', function(snapshot) {
 //Display chat messages on the DOM once found by the above function
 function displayChatMessage(date, name, text) {
   $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#chatDiv'));
-  $('#chatDiv')[0].scrollTop = $('#chatDiv')[0].scrollHeight;
-};
+
+    //Functionality to scroll to the bottom of the chat box
+    var height = 0;
+    $('#chatDiv').each(function(i, value){
+        height += parseInt($(this).height());
+    });
+    height += '';
+    $('#chatDiv').animate({scrollTop: height});
+
+    };
 
 //Remove the user's chat once someone has disconnected
 dataRef.ref("/chat/").onDisconnect().remove();

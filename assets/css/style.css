@@ -22,3 +22,9 @@ body {
 #chatDiv, #infoBox {
     height: 125px;
 }
+
+#chatDiv {
+    height: 100px;
+    background: lightgray;
+    overflow: auto;
+}
