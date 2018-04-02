@@ -117,7 +117,7 @@ function youPicked () {
 $(".choice").click(function () {
     currentPlayer.pick = this.id;
     dataRef.ref("/players/" + playerNum).set(currentPlayer.pick);
-    $("#infoBox").text("You selected " + this.id)
+    $("#infoBox").val("You selected " + this.id)
     setTimeout(2000); // Wait just a sec to allow user to see above message
 });
 
