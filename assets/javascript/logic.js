@@ -64,7 +64,7 @@ var dataRef = firebase.database();
         else {
             playerNumber = null;
             currentPlayer = null;
-            alert("Too many are players online now, try again later")
+            alert("Too many are players online now, please try again later")
         }
 
         // Once player is assigned a role, send info to database
@@ -109,7 +109,9 @@ $(".icon").click(function () {
 
 // Define Base Game Logic around Player Guesses 
 function gameLogic(marioPick, luigiPick) {
-    if (marioPick == luigiPick) { ties++ } // If guesses match each other, the players tie
+    // If guesses match each other, the players tie
+    if (marioPick == luigiPick) { ties++ } 
+        // The following scenarios result in a win for player one
         else if ((marioPick == "Scissors") && (luigiPick == "Paper")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Scissors cuts Paper
         else if ((marioPick == "Paper") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper covers Rock
         else if ((marioPick == "Rock") && (luigiPick == "Lizard")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Lizard
@@ -120,7 +122,8 @@ function gameLogic(marioPick, luigiPick) {
         else if ((marioPick == "Paper") && (luigiPick == "Spock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper disproves Spock
         else if ((marioPick == "Spock") && (luigiPick == "Rock")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Spock vaporizes Rock
         else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNumber == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
-        else { if (playerNumber == "2") { currentPlayer.wins++;} else {currentPlayer.losses++;}} // All other scenarios will result in a loss
+        // All other scenarios will result in a loss for player one
+        else { if (playerNumber == "1") { currentPlayer.losses++;} else {currentPlayer.wins++;}} 
   };
 
 
@@ -164,8 +167,8 @@ dataRef.ref("/chat").on('child_added', function(snapshot) {
 });
 
 function displayChatMessage(date, name, text) {
-  $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#messagesDiv'));
-  $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+  $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#chatDiv'));
+  $('#chatDiv')[0].scrollTop = $('#chatDiv')[0].scrollHeight;
 };
 
 //-----------------------------------------------------------------------------------------------------------
