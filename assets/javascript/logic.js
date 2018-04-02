@@ -52,32 +52,34 @@ var dataRef = firebase.database();
 
         // Determine if current player will be assiged to "mario" or "luigi"
         if (!marioLoggedIn) {
-            playerNumber = "1";
+            playerNum = "1";
             currentPlayer = mario;
             marioLoggedIn = true;
         }
         else if (!luigiLoggedIn) {
-            playerNumber = "2";
+            playerNum = "2";
             currentPlayer = luigi;
             luigiLoggedIn = true;
         } // handle scenario if more than 2 players are online
         else {
-            playerNumber = null;
+            playerNum = null;
             currentPlayer = null;
             alert("Too many are players online now, please try again later")
         }
 
         // Once player is assigned a role, send info to database
-        if (playerNumber) {
+        if (playerNum) {
             playerName = $("#name-input").val().trim();
             currentPlayer.name = playerName;
             $("#name-input").val("");
             $("#disabledInput").val(playerName);
-            dataRef.ref("/players/" + playerNumber).set(currentPlayer);
-            dataRef.ref("/players/" + playerNumber).onDisconnect().remove();
+            dataRef.ref("/players/" + playerNum).set(currentPlayer);
+            dataRef.ref("/players/" + playerNum).onDisconnect().remove();
+            addNameToChat();
+            pickOption();
             }
     });
-    
+
 
 //------------------------------------------------------------------------------------
 // Use Presence to track active players
@@ -101,7 +103,18 @@ var connectedRef = dataRef.ref(".info/connected");
 
 //#region Game Play logic 
 
-// when an optoin is picked, send it to the database
+// Section for InfoBox Communications
+function pickOption () {
+    $("#infoBox").val("Pick an Option to Begin")
+}
+
+function youPicked () {
+    $("#infoBox").text("You selected")
+}
+
+
+
+// when an option is picked, send it to the database
 $(".icon").click(function () {
     currentPlayer.pick = this.id;
     dataRef.ref("/players/" + playerNumber).set(currentPlayer);
@@ -140,17 +153,18 @@ function gameLogic(marioPick, luigiPick) {
 //#region Chat Box Functionality
 
 // Retrieve the user's name from local storage if present and adds to chat box name field. 
-      userName = localStorage.getItem('username');
+      function addNameToChat ()
+        {userName = currentPlayer.name;
       if (userName != "undefined" || userName != "null") {
-          $("#disabledInput").val(localStorage.getItem("username"))
+          $("#disabledInput").val(currentPlayer.name)
       } else {
           $("#disabledInput").val("Login to chat")
-      }
+      }}
 
 //Store Message Inputs to FireBase (along with username)
 $('#messageInput').keypress(function (e) {
   if (e.keyCode == 13) {
-    var name = localStorage.getItem('username');
+    var name = currentPlayer.name;
     var text = $('#messageInput').val();
     dataRef.ref("/chat").push({name: name, 
         text: text,
@@ -166,10 +180,14 @@ dataRef.ref("/chat").on('child_added', function(snapshot) {
   displayChatMessage(message.date, message.name, message.text);
 });
 
+//Display chat messages on the DOM once found by the above function
 function displayChatMessage(date, name, text) {
   $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#chatDiv'));
   $('#chatDiv')[0].scrollTop = $('#chatDiv')[0].scrollHeight;
 };
+
+//Remove the user's chat once someone has disconnected
+dataRef.ref("/chat/").onDisconnect().remove();
 
 //-----------------------------------------------------------------------------------------------------------
 //#endregion
