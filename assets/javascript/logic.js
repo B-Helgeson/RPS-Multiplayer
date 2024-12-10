@@ -1,221 +1,278 @@
-$(document).ready(function(){ // Opening JavaScript code with docuement ready function
-//#region global config
-
-// Initialize Firebase Setup
-    var config = {
-        apiKey: "AIzaSyAjMR0unuqCMbb8PZtQFNTiPBeolDLV6ao",
-        authDomain: "rps-lizardspock.firebaseapp.com",
-        databaseURL: "https://rps-lizardspock.firebaseio.com",
-        projectId: "rps-lizardspock",
-        storageBucket: "rps-lizardspock.appspot.com",
-        messagingSenderId: "904612609218"
-      };
-      firebase.initializeApp(config);
-
-// Define Database Variables
-var dataRef = firebase.database();
-
-// Global Variables For the Game
-   var  playerName,
-        marioLoggedIn = false,
-        luigiLoggedIn = false,
-        playerNum,
-        currentPlayer,
-        mario = {
-            name: "",
-            pick: "",
-            wins: 0,
-            losses: 0
-            },
-        luigi = {
-            name: "",
-            pick: "",
-            wins: 0,
-            losses: 0
-            }
-
-//Function to format date for game using native javascript
-   function getDate(){
-    var now = new Date();
-    var dateString = now.toISOString();
-    return dateString
-    }
-
-//-------------------------------------------------------------------------------------------
-//#endregion
-
-//#region login/logout/reset functions
-
-   // function to push new users to firebase
-   $("#add-user").on("click", function(event) {
-    event.preventDefault();
-
-        // Determine if current player will be assiged to "mario" or "luigi"
-        if (!marioLoggedIn) {
-            playerNum = "1";
-            currentPlayer = mario;
-            marioLoggedIn = true;
-        }
-        else if (!luigiLoggedIn) {
-            playerNum = "2";
-            currentPlayer = luigi;
-            luigiLoggedIn = true;
-        } // handle scenario if more than 2 players are online
-        else {
-            playerNum = null;
-            currentPlayer = null;
-            alert("Too many are players online now, please try again later")
-        }
-
-        // Once player is assigned a role, send info to database
-        if (playerNum) {
-            playerName = $("#name-input").val().trim();
-            currentPlayer.name = playerName;
-            $("#name-input").val("");
-            $("#disabledInput").val(playerName);
-            dataRef.ref("/players/" + playerNum).set(currentPlayer);
-            dataRef.ref("/players/" + playerNum).onDisconnect().remove();
-            addNameToChat();
-            pickOption();
-            }
-    });
-
-
-//------------------------------------------------------------------------------------
-// Use Presence to track active players
-var connectionsRef = dataRef.ref("/connections");
-var connectedRef = dataRef.ref(".info/connected");
-    connectedRef.on("value", function(snap) {
-        if (snap.val()) {
-        var con = connectionsRef.push(true);
-        con.onDisconnect().remove();
-        }
-    });
-
-    connectionsRef.on("value", function(snap) {
-    $("#connected-players").text(snap.numChildren());
-    });
-
-
-
-//----------------------------------------------------------------------------------------
-//#endregion
-
-//#region Game Play logic 
-
-// Section for InfoBox Communications
-function pickOption () {
-    $("#infoBox").val("Pick an Option to Begin")
-}
-
-function youPicked () {
-    $("#infoBox").text("You selected")
-}
-
-
-// when an option is picked, send it to the database
-$(".choice").click(function () {
-    currentPlayer.pick = this.id;
-    dataRef.ref("/players/" + playerNum).set(currentPlayer.pick);
-    $("#infoBox").val("You selected " + this.id)
-    setTimeout(2000); // Wait just a sec to allow user to see above message
-});
-
-
-// When players are updated, check if both players have made a selection
-dataRef.ref("/players/").on("value", function (snapshot) {
-
-    $("#infoBox").val("Waiting on opponent");
-
-    // Once both parties have picked, run the game logic. 
-    if (mario.pick && luigi.pick) {
-        gameLogic(mario.pick, luigi.pick);
-    }
-
-} );
-
-
-// Define Base Game Logic around Player Guesses 
-function gameLogic(marioPick, luigiPick) {
-    // If guesses match each other, the players tie
-    if (marioPick == luigiPick) { ties++ } 
-        // The following scenarios result in a win for player one
-        else if ((marioPick == "Scissors") && (luigiPick == "Paper")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Scissors cuts Paper
-        else if ((marioPick == "Paper") && (luigiPick == "Rock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper covers Rock
-        else if ((marioPick == "Rock") && (luigiPick == "Lizard")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Lizard
-        else if ((marioPick == "Lizard") && (luigiPick == "Spock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Lizard poisons Spock
-        else if ((marioPick == "Spock") && (luigiPick == "Scissors")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Spock smashes Scissors
-        else if ((marioPick == "Scissors") && (luigiPick == "Lizard")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Scissors decapitates Lizard
-        else if ((marioPick == "Lizard") && (luigiPick == "Paper")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}  // Lizard eats Paper
-        else if ((marioPick == "Paper") && (luigiPick == "Spock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Paper disproves Spock
-        else if ((marioPick == "Spock") && (luigiPick == "Rock")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Spock vaporizes Rock
-        else if ((marioPick == "Rock") && (luigiPick == "Scissors")) if (playerNum == "1") { currentPlayer.wins++;} else {currentPlayer.losses++;}   // Rock crushes Scissors
-        // All other scenarios will result in a loss for player one
-        else { if (playerNum == "1") { currentPlayer.losses++;} else {currentPlayer.wins++;}} 
-
-        $("#infoBox").val(currentPlayer.name+ " picked " + currentPlayer.pick + " opponent picked ")
-  };
-
-
-
-
-//Log Player Guesses 
-//
-
-
-
-//----------------------------------------------------------------------------------------------
-//#endregion
-
-//#region Chat Box Functionality
-
-// Retrieve the user's name from local storage if present and adds to chat box name field. 
-      function addNameToChat ()
-        {userName = currentPlayer.name;
-      if (userName != "undefined" || userName != "null") {
-          $("#disabledInput").val(currentPlayer.name)
-      } else {
-          $("#disabledInput").val("Login to chat")
-      }}
-
-//Store Message Inputs to FireBase (along with username)
-$('#messageInput').keypress(function (e) {
-  if (e.keyCode == 13) {
-    var name = currentPlayer.name;
-    var text = $('#messageInput').val();
-    dataRef.ref("/chat").push({name: name, 
-        text: text,
-        date: getDate()
-        });
-
-    $('#messageInput').val('');
-  }
-});
-
-//Listen for new chat messages and update the document
-dataRef.ref("/chat").on('child_added', function(snapshot) {
-  var message = snapshot.val();
-  displayChatMessage(message.date, message.name, message.text);
-});
-
-//Display chat messages on the DOM once found by the above function
-function displayChatMessage(date, name, text) {
-  $('<div/>').text(text).prepend($('<em/>').text('['+ date + '] ' + name +': ')).appendTo($('#chatDiv'));
-
-    //Functionality to scroll to the bottom of the chat box
-    var height = 0;
-    $('#chatDiv').each(function(i, value){
-        height += parseInt($(this).height());
-    });
-    height += '';
-    $('#chatDiv').animate({scrollTop: height});
-
+$(document).ready(function () {
+    // Firebase Initialization
+    const config = {
+      apiKey: "AIzaSyAjMR0unuqCMbb8PZtQFNTiPBeolDLV6ao",
+      authDomain: "rps-lizardspock.firebaseapp.com",
+      databaseURL: "https://rps-lizardspock.firebaseio.com",
+      projectId: "rps-lizardspock",
+      storageBucket: "rps-lizardspock.appspot.com",
+      messagingSenderId: "904612609218",
     };
+    firebase.initializeApp(config);
+  
+    const dataRef = firebase.database();
+  
+    // Game Variables
+    let currentPlayer = null;
+    let playerNum = null;
+    const players = { 1: null, 2: null };
+    const choices = ["Rock", "Paper", "Scissors", "Lizard", "Spock"];
+  
+    // Helper Function: Get Current Timestamp
+    function getDate() {
+      return new Date().toISOString();
+    }
+  
+    // Update Players Online
+    const connectionsRef = dataRef.ref("/connections");
+    const connectedRef = dataRef.ref(".info/connected");
+  
+    connectedRef.on("value", function (snap) {
+      if (snap.val()) {
+        const con = connectionsRef.push(true);
+        con.onDisconnect().remove();
+      }
+    });
+  
+    connectionsRef.on("value", function (snap) {
+      $("#connected-players").text(snap.numChildren());
+    });
+  
+    // Player Login
+    $("#add-user").on("click", function (event) {
+      event.preventDefault();
+  
+      if (!players[1]) {
+        playerNum = 1;
+        currentPlayer = { name: $("#name-input").val().trim(), pick: "", wins: 0, losses: 0 };
+        players[1] = currentPlayer;
+      } else if (!players[2]) {
+        playerNum = 2;
+        currentPlayer = { name: $("#name-input").val().trim(), pick: "", wins: 0, losses: 0 };
+        players[2] = currentPlayer;
+      } else {
+        alert("Game is full! Please wait for a player to leave.");
+        return;
+      }
+  
+      $("#name-input").val("");
+      $("#disabledInput").val(currentPlayer.name);
+  
+      // Update Player in Firebase
+      dataRef.ref(`/players/${playerNum}`).set(currentPlayer);
+      dataRef.ref(`/players/${playerNum}`).onDisconnect().remove();
+  
+      $("#infoBox").val("Pick an option to begin!");
+    });
+  
+    // Listen for Player Updates
+    dataRef.ref("/players").on("value", function (snapshot) {
+      const playersData = snapshot.val();
+      if (playersData) {
+        players[1] = playersData[1] || null;
+        players[2] = playersData[2] || null;
+        updateUI();
+        checkGameLogic();
+      }
+    });
+  
+    function updateUI() {
+      if (players[1]) {
+        $("#player1-name").text(players[1].name || "Waiting for Player 1...");
+        $("#winCount").text(players[1].wins || 0);
+        $("#lossCount").text(players[1].losses || 0);
+      }
+  
+      if (players[2]) {
+        $("#player2-name").text(players[2].name || "Waiting for Player 2...");
+      }
+    }
+  
+    function updateInfoBox(playerNum, message) {
+        if (playerNum === 1) {
+          $("#player1-infoBox").val(message);
+        } else if (playerNum === 2) {
+          $("#player2-infoBox").val(message);
+        }
+      }
+      
+      // Handle Player's Choice
+      $(".choice").on("click", function () {
+        if (!currentPlayer || !playerNum) {
+          alert("Please log in to play!");
+          return;
+        }
+      
+        if (currentPlayer.pick) {
+          alert("You have already made your choice!");
+          return;
+        }
+      
+        currentPlayer.pick = $(this).attr("id");
+        dataRef.ref(`/players/${playerNum}`).update({ pick: currentPlayer.pick });
+      
+        updateInfoBox(playerNum, `You selected ${currentPlayer.pick}`);
+      });
+      
 
-//Remove the user's chat once someone has disconnected
-dataRef.ref("/chat/").onDisconnect().remove();
+      // Check Game Logic
+      function checkGameLogic() {
+        if (players[1] && players[2] && players[1].pick && players[2].pick) {
+          const p1Choice = players[1].pick;
+          const p2Choice = players[2].pick;
+      
+          let winnerMessage;
+          if (p1Choice === p2Choice) {
+            winnerMessage = "It's a tie!";
+          } else if (
+            (p1Choice === "Rock" && (p2Choice === "Scissors" || p2Choice === "Lizard")) ||
+            (p1Choice === "Paper" && (p2Choice === "Rock" || p2Choice === "Spock")) ||
+            (p1Choice === "Scissors" && (p2Choice === "Paper" || p2Choice === "Lizard")) ||
+            (p1Choice === "Lizard" && (p2Choice === "Spock" || p2Choice === "Paper")) ||
+            (p1Choice === "Spock" && (p2Choice === "Scissors" || p2Choice === "Rock"))
+          ) {
+            winnerMessage = `${players[1].name} wins!`;
+            players[1].wins++;
+            players[2].losses++;
+          } else {
+            winnerMessage = `${players[2].name} wins!`;
+            players[2].wins++;
+            players[1].losses++;
+          }
+      
+          // Display result in each player's message box
+          updateInfoBox(1, winnerMessage);
+          updateInfoBox(2, winnerMessage);
+      
+          // Reset choices in both local variables and Firebase
+          players[1].pick = "";
+          players[2].pick = "";
+          if (playerNum === 1) currentPlayer.pick = "";
+          if (playerNum === 2) currentPlayer.pick = "";
+      
+          dataRef.ref("/players/1").update(players[1]);
+          dataRef.ref("/players/2").update(players[2]);
+        }
+      }
+      
+  
+    // Check Game Logic
+    function checkGameLogic() {
+        // Ensure both players exist and have made their selections
+        if (players[1] && players[2] && players[1].pick && players[2].pick) {
+          const p1Choice = players[1].pick;
+          const p2Choice = players[2].pick;
+      
+          // Determine winner
+          let winnerMessage;
+          if (p1Choice === p2Choice) {
+            winnerMessage = "It's a tie!";
+          } else if (
+            (p1Choice === "Rock" && (p2Choice === "Scissors" || p2Choice === "Lizard")) ||
+            (p1Choice === "Paper" && (p2Choice === "Rock" || p2Choice === "Spock")) ||
+            (p1Choice === "Scissors" && (p2Choice === "Paper" || p2Choice === "Lizard")) ||
+            (p1Choice === "Lizard" && (p2Choice === "Spock" || p2Choice === "Paper")) ||
+            (p1Choice === "Spock" && (p2Choice === "Scissors" || p2Choice === "Rock"))
+          ) {
+            winnerMessage = `${players[1].name} wins!`;
+            players[1].wins++;
+            players[2].losses++;
+          } else {
+            winnerMessage = `${players[2].name} wins!`;
+            players[2].wins++;
+            players[1].losses++;
+          }
+      
+          // Display result
+          $("#infoBox").val(winnerMessage);
+      
+          // Reset choices in both local variables and Firebase
+          players[1].pick = "";
+          players[2].pick = "";
+          if (playerNum === 1) currentPlayer.pick = "";
+          if (playerNum === 2) currentPlayer.pick = "";
+      
+          dataRef.ref("/players/1").update(players[1]);
+          dataRef.ref("/players/2").update(players[2]);
+        }
+      }      
+  
+  // Listen for player updates
+  dataRef.ref("/players").on("value", function (snapshot) {
+    const playersData = snapshot.val();
+    if (playersData) {
+      players[1] = playersData[1] || null;
+      players[2] = playersData[2] || null;
+      updateUI();
+      checkGameLogic(); // Trigger game logic after player update
+    }
+  });
+  
+  
+    // Chat Functionality
+    $("#messageInput").keypress(function (e) {
+      if (e.keyCode === 13 && currentPlayer && currentPlayer.name) {
+        const message = $("#messageInput").val();
+        dataRef.ref("/chat").push({ name: currentPlayer.name, text: message, date: getDate() });
+        $("#messageInput").val("");
+      }
+    });
+  
+    dataRef.ref("/chat").on("child_added", function (snapshot) {
+      const message = snapshot.val();
+      displayChatMessage(message.date, message.name, message.text);
+    });
+  
+    function displayChatMessage(date, name, text) {
+      $("<div/>")
+        .text(text)
+        .prepend($("<em/>").text(`[${date}] ${name}: `))
+        .appendTo($("#chatDiv"));
+  
+      $("#chatDiv").scrollTop($("#chatDiv")[0].scrollHeight);
+    }
+  });
+  
+  //ResetButton
+  $("#resetButton").on("click", function () {
+    // Clear Firebase nodes
+    dataRef.ref("/players").remove();
+    dataRef.ref("/chat").remove();
+  
+    // Reset local variables
+    players[1] = null;
+    players[2] = null;
+    currentPlayer = null;
+    playerNum = null;
+  
+    // Reset UI elements for both players
+    $("#player1-infoBox").val("Game reset! Log in to play again.");
+    $("#player2-infoBox").val("Game reset! Log in to play again.");
+    $("#chatDiv").empty();
+    $("#winCount").text(0);
+    $("#lossCount").text(0);
+    $("#player1-name").text("Waiting for Player 1...");
+    $("#player2-name").text("Waiting for Player 2...");
+  });
+  
+  
 
-//-----------------------------------------------------------------------------------------------------------
-//#endregion
 
-}); // End of all JavaScript 
+  // Clear Old Data in FireBase
+  function cleanupOldData() {
+    const cutoffTime = Date.now() - 24 * 60 * 60 * 1000; // 24 hours ago
+  
+    // Clean old chat messages
+    dataRef.ref("/chat").once("value", function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        const message = childSnapshot.val();
+        if (new Date(message.date).getTime() < cutoffTime) {
+          dataRef.ref(`/chat/${childSnapshot.key}`).remove();
+        }
+      });
+    });
+  }
+  
+  // Call cleanup on page load
+  cleanupOldData();
+  
