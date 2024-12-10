@@ -38,35 +38,22 @@
                     </p>
             </div>
         </div>
-    </div>
 
-        <div class="row">
-            <div class="col-md-1"></div> <!-- Blank column for spacing -->
+        <!-- column two is a thumbnail of the chart image -->
+        <!-- <div class="col-md-1"></div> Blank column for spacing -->
+        <!-- <div class="col-md-5" id="chart">
+            <img id="image" class="img-thumbnail" src="assets/images/rpsls_chart.png" alt="game chart">
+        </div> -->
 
-            <div class="panel panel-default col-md-7" id="quote"> 
-                <div class="panel-heading">
-                    <h3 class="panel-title">Login Here</h3>
-                </div>
-                <div class="panel-body">
-                    <form role="form">
-                        <div class="form-group">
-                            <label for="name-input">User Name:</label>
-                            <input class="form-control" id="name-input" type="text">
-                        </div>
-                        <button class="btn btn-default" id="add-user" type="submit">Login</button>
-                    </form>
-                    <h5 class=""> <strong><span id="connected-players"></span></strong> players are online.</h5>
-                </div>
-            </div>
-        </div>
 
+    </div> <!-- Closing the first row -->
 
     <div class="row">
         <div class="col-md-1"></div> <!-- Blank column for spacing -->
 
         <div class="panel panel-default col-md-3"> 
             <div class="panel-heading">
-                <h3 class="panel-title">Player 1</h3>
+                <h3 class="panel-title">Game Box</h3>
             </div>
             <div class="panel-body" id="gameBox">
                 <p>
@@ -78,46 +65,45 @@
                     <button type="button" id="Spock" class="choice btn btn-danger">Spock</button>
                 </p>
 
-                <div id="messageBox">
-                        <input class="form-control text-white bg-dark" id="infoBox" type="text" placeholder="Login to begin" disabled>
+                <div id="messageBox1">
+                    <input class="form-control text-white bg-dark" id="player1-infoBox" type="text" placeholder="Waiting for Player 1" disabled>
+                  </div>
+                <div id="messageBox2">
+                    <input class="form-control text-white bg-dark" id="player2-infoBox" type="text" placeholder="Waiting for Player 2" disabled>
                 </div>
-                <hr />
-                <div class="wins">
-                    <h4>Wins: <span class="badge" id="winCount">0</span></h4>
-                </div> <!-- wins -->            
-                <div class="losses">
-                    <h4>Losses: <span class="badge" id="lossCount">0</span></h4>
-                </div> <!-- losses -->
             </div>
         </div>
 
         <div class="col-md-1"></div> <!-- Blank column for spacing -->
 
-        
         <div class="panel panel-default col-md-3"> 
             <div class="panel-heading">
-                <h3 class="panel-title">Player 2</h3>
+                <h3 class="panel-title">Score Board</h3>
             </div>
-            <div class="panel-body" id="p2GameBox">
-                <p>
-                    <button type="button" id="p2Rock" class="choice btn btn-primary">Rock</button>
-                    <button type="button" id="p2Paper" class="choice btn btn-success">Paper</button>
-                    <button type="button" id="p2Scissors" class="choice btn btn-info">Scissors</button> 
-                </p><p>
-                    <button type="button" id="p2Lizard" class="choice btn btn-warning">Lizard</button>
-                    <button type="button" id="p2Spock" class="choice btn btn-danger">Spock</button>
-                </p>
+            <div class="panel-body" id="scoreBoard">
+                <div class="scoreBoard">    
+                    
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="name-input">User Name:</label>
+                            <input class="form-control" id="name-input" type="text">
+                        </div>
+                        <button class="btn btn-default" id="add-user" type="submit">Login</button>
+                    </form>
 
-                <div id="p2MessageBox">
-                        <input class="form-control text-white bg-dark" id="infoBox" type="text" placeholder="Login to begin" disabled>
-                </div>
+                    <h5 class=""> <strong><span id="connected-players"></span></strong> players are online.</h5>
+
                     <hr />
+
                     <div class="wins">
-                        <h4>Wins: <span class="badge" id="p2WinCount">0</span></h4>
+                        <h4>Wins: <span class="badge" id="winCount">0</span></h4>
                     </div> <!-- wins -->            
                     <div class="losses">
-                        <h4>Losses: <span class="badge" id="p2LossCount">0</span></h4>
+                        <h4>Losses: <span class="badge" id="lossCount">0</span></h4>
                     </div> <!-- losses -->
+
+
+
                 </div> <!-- scoreBoard -->
             </div>
         </div>
@@ -157,10 +143,8 @@
         </div>
     </div> <!-- Closing the gameBox row -->
 
-
-
+    <button id="resetButton" class="btn btn-warning">Reset Game</button>
     
-
     <!-- Linking to jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <!-- Linking to my custom javascript -->
